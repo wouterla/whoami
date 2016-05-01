@@ -23,7 +23,9 @@ func main() {
         for _, e := range os.Environ() {
             pair := strings.Split(e, "=")
             if (strings.HasPrefix("pair[0]", "WHOAMI")) {
-              fmt.Println(w, "%s: %s", pair[0], pair[1])
+              fmt.Fprintf(os.Stdout, "%s: %s", pair[0], pair[1])
+              fmt.Fprintf(w, "%s: %s", pair[0], pair[1])
+              fmt.Println()
             }
         }
 
