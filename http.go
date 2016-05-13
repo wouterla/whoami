@@ -15,24 +15,21 @@ type Whoami struct {
 
 func main() {
 	port := GetPort()
-	fmt.Fprintf(os.Stdout, "Listening on :%s\n", port)
+	bind := BindAddr()
 	hostname, _ := os.Hostname()
+
+	fmt.Fprintf(os.Stdout, "Listening on :%s\n", port)
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(os.Stdout, "I'm %s\n", hostname)
 		fmt.Fprintf(w, "I'm %s\n", hostname)
-		fmt.Println()
-		for _, e := range os.Environ() {
-			pair := strings.Split(e, "=")
-			if strings.HasPrefix("pair[0]", "WHOAMI") {
-				fmt.Fprintf(os.Stdout, "%s: %s", pair[0], pair[1])
-				fmt.Fprintf(w, "%s: %s", pair[0], pair[1])
-				fmt.Println()
-			}
+		for _, whoami := range GetWhoamis() {
+			fmt.Fprintf(os.Stdout, "%s: %s\n", whoami.Key, whoami.Value)
+			fmt.Fprintf(w, "%s: %s\n", whoami.Key, whoami.Value)
 		}
-
 	})
 
-	log.Fatal(http.ListenAndServe(BindAddr(), nil))
+	log.Fatal(http.ListenAndServe(bind, nil))
 }
 
 func GetPort() (port string) {
@@ -57,12 +54,12 @@ func GetWhoamis() (whoamis []*Whoami) {
 	return
 }
 
-func WhoamiFromEnvStr(txt string) *Whoami {
+func WhoamiFromEnvStr(txt string) (w *Whoami) {
 	if strings.HasPrefix(txt, "WHOAMI") {
 		pair := strings.Split(txt, "=")
 		key := pair[0][7:len(pair[0])]
 		value := pair[1]
-		return &Whoami{key, value}
+		w = &Whoami{key, value}
 	}
-	return nil
+	return
 }
