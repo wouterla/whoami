@@ -1,35 +1,35 @@
 package main
 
 import (
-  "strings"
-  "os"
-  "fmt"
-  "net/http"
-  "log"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"strings"
 )
 
 func main() {
-    port := os.Getenv("PORT")
-    if port == "" {
-        port = "8080"
-    }
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
-    fmt.Fprintf(os.Stdout, "Listening on :%s\n", port)
-    hostname, _ := os.Hostname()
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintf(os.Stdout, "I'm %s\n", hostname)
- 	      fmt.Fprintf(w, "I'm %s\n", hostname)
-        fmt.Println()
-        for _, e := range os.Environ() {
-            pair := strings.Split(e, "=")
-            if (strings.HasPrefix("pair[0]", "WHOAMI")) {
-              fmt.Fprintf(os.Stdout, "%s: %s", pair[0], pair[1])
-              fmt.Fprintf(w, "%s: %s", pair[0], pair[1])
-              fmt.Println()
-            }
-        }
+	fmt.Fprintf(os.Stdout, "Listening on :%s\n", port)
+	hostname, _ := os.Hostname()
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(os.Stdout, "I'm %s\n", hostname)
+		fmt.Fprintf(w, "I'm %s\n", hostname)
+		fmt.Println()
+		for _, e := range os.Environ() {
+			pair := strings.Split(e, "=")
+			if strings.HasPrefix("pair[0]", "WHOAMI") {
+				fmt.Fprintf(os.Stdout, "%s: %s", pair[0], pair[1])
+				fmt.Fprintf(w, "%s: %s", pair[0], pair[1])
+				fmt.Println()
+			}
+		}
 
-    })
+	})
 
-    log.Fatal(http.ListenAndServe(":" + port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
