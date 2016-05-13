@@ -10,7 +10,6 @@ import (
 
 func main() {
 	port := GetPort()
-	bind := ":" + port
 	fmt.Fprintf(os.Stdout, "Listening on :%s\n", port)
 	hostname, _ := os.Hostname()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +27,7 @@ func main() {
 
 	})
 
-	log.Fatal(http.ListenAndServe(bind, nil))
+	log.Fatal(http.ListenAndServe(BindAddr(), nil))
 }
 
 func GetPort() (port string) {
@@ -38,4 +37,8 @@ func GetPort() (port string) {
 	}
 
 	return
+}
+
+func BindAddr() string {
+	return ":" + GetPort()
 }

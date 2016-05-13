@@ -23,4 +23,19 @@ func TestGetPort(t *testing.T) {
 	if out != expected {
 		t.Errorf("%s expected; got %s", expected, out)
 	}
+
+	/* Reset PORT */
+	err = os.Setenv("PORT", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestBindAddr(t *testing.T) {
+	expected := ":8080"
+	out := BindAddr()
+
+	if out != expected {
+		t.Errorf("%s expected; got %s", expected, out)
+	}
 }
