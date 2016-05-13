@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+type Whoami struct {
+	Key   string
+	Value string
+}
+
 func main() {
 	port := GetPort()
 	fmt.Fprintf(os.Stdout, "Listening on :%s\n", port)
@@ -41,4 +46,23 @@ func GetPort() (port string) {
 
 func BindAddr() string {
 	return ":" + GetPort()
+}
+
+func GetWhoamis() (whoamis []*Whoami) {
+	for _, kv := range os.Environ() {
+		if whoami := WhoamiFromEnvStr(kv); whoami != nil {
+			whoamis = append(whoamis, whoami)
+		}
+	}
+	return
+}
+
+func WhoamiFromEnvStr(txt string) *Whoami {
+	if strings.HasPrefix(txt, "WHOAMI") {
+		pair := strings.Split(txt, "=")
+		key := pair[0][7:len(pair[0])]
+		value := pair[1]
+		return &Whoami{key, value}
+	}
+	return nil
 }
