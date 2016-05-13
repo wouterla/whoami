@@ -9,11 +9,8 @@ import (
 )
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
+	port := GetPort()
+	bind := ":" + port
 	fmt.Fprintf(os.Stdout, "Listening on :%s\n", port)
 	hostname, _ := os.Hostname()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -31,5 +28,14 @@ func main() {
 
 	})
 
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(bind, nil))
+}
+
+func GetPort() (port string) {
+	port = os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	return
 }
